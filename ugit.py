@@ -38,7 +38,7 @@ ignore = ignore_files
 # GitHub uses 'main' instead of master for python repository trees
 giturl = 'https://github.com/{user}/{repository}'
 call_trees_url = f'https://api.github.com/repos/{user}/{repository}/git/trees/main?recursive=1'
-raw = f'https://raw.githubusercontent.com/{user}/{repository}/master/'
+raw_url = f'https://raw.githubusercontent.com/{user}/{repository}/master/'
 
 def pull(f_path,raw_url):
   print(f'pulling {f_path} from github')
@@ -59,7 +59,7 @@ def pull(f_path,raw_url):
     except:
       print('tried to close new_file to save memory durring raw file decode')
   
-def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
+def pull_all(tree=call_trees_url,raw_url = raw_url,ignore = ignore,isconnected=False):
   if not isconnected:
       wlan = wificonnect() 
   os.chdir('/')
@@ -85,7 +85,7 @@ def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
         log.append(f'{i["path"]} del failed from int mem')
         print('failed to delete old file')
       try:
-        pull(i['path'],raw + i['path'])
+        pull(i['path'],raw_url + i['path'])
         log.append(i['path'] + ' updated')
       except:
         log.append(i['path'] + ' failed to pull')
@@ -166,7 +166,7 @@ def is_directory(file):
   except:
     return directory
     
-def pull_git_tree(tree_url=call_trees_url,raw = raw):
+def pull_git_tree(tree_url=call_trees_url):
   headers = {'User-Agent': 'ugit-turfptax'} 
   # ^^^ Github Requires user-agent header otherwise 403
   if len(token) > 0:
@@ -188,7 +188,7 @@ def parse_git_tree():
   print('files:',files)
    
    
-def check_ignore(tree=call_trees_url,raw = raw,ignore = ignore):
+def check_ignore(tree=call_trees_url,ignore = ignore):
   os.chdir('/')
   tree = pull_git_tree()
   check = []
